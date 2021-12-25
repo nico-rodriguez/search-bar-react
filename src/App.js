@@ -1,24 +1,26 @@
-import logo from './logo.svg';
+import { useState } from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
 import './App.css';
+import Announcer from './components/Announcer';
+import Posts from './components/Posts';
+import Search from './components/Search';
+import filterPosts from './utils/filterPosts';
+import posts from './utils/posts';
 
-function App() {
+const App = () => {
+  const { search } = window.location;
+  const query = new URLSearchParams(search).get('s');
+  const [searchQuery, setSearchQuery] = useState(query || '');
+  const filteredPosts = filterPosts(posts, searchQuery);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="App">
+        <Search searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+        <Posts posts={filteredPosts}/>
+        <Announcer message={`Query has ${filterPosts.length} results`}/>
+      </div>
+    </Router>
   );
 }
 
